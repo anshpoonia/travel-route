@@ -9,15 +9,6 @@ let nodeData = [
     {id: 8, label: 'Farukh Nagar'},
     {id: 9, label: 'Gurgaon'},
     {id: 10, label: 'Faridabad'},
-    {id: 11, label: 'Sonipat'},
-    {id: 12, label: 'Gohana'},
-    {id: 13, label: 'Meham'},
-    {id: 14, label: 'Jind'},
-    {id: 15, label: 'Hansi'},
-    {id: 16, label: 'Bhiwani'},
-    {id: 17, label: 'Charkhi Dadri'},
-    {id: 18, label: 'Rewari'},
-
 ];
 
 let edgeData = [
@@ -37,33 +28,13 @@ let edgeData = [
     {from: 7, to: 9, weight: 1, value: 40, id: 14},
     {from: 9, to: 10, weight: 1, value: 38, id: 15},
     {from: 7, to: 10, weight: 1, value: 50, id: 16},
-    {from: 11, to: 7, weight: 1, value: 40, id: 17},
-    {from: 11, to: 5, weight: 1, value: 41, id: 18},
-    {from: 11, to: 3, weight: 1, value: 38, id: 19},
-    {from: 11, to: 1, weight: 1, value: 48, id: 20},
-    {from: 11, to: 12, weight: 1, value: 35, id: 21},
-    {from: 12, to: 1, weight: 1, value: 35, id: 22},
-    {from: 12, to: 13, weight: 1, value: 47, id: 23},
-    {from: 12, to: 14, weight: 1, value: 46, id: 24},
-    {from: 13, to: 14, weight: 1, value: 49, id: 25},
-    {from: 13, to: 15, weight: 1, value: 36, id: 26},
-    {from: 13, to: 16, weight: 1, value: 28, id: 27},
-    {from: 13, to: 17, weight: 1, value: 50, id: 28},
-    {from: 14, to: 15, weight: 1, value: 55, id: 29},
-    {from: 15, to: 16, weight: 1, value: 40, id: 30},
-    {from: 16, to: 17, weight: 1, value: 30, id: 31},
-    {from: 17, to: 18, weight: 1, value: 62, id: 32},
-    {from: 17, to: 4, weight: 1, value: 44, id: 33},
-    {from: 18, to: 4, weight: 1, value: 47, id: 34},
-    {from: 18, to: 9, weight: 1, value: 56, id: 35},
-
 ];
 
-let container = document.getElementById('mynetwork');
-let startingNode = null;
-const startingContainer = document.getElementById('startingPoint');
-let destinationNode = null;
-const destinationContainer = document.getElementById('destinationPoint');
+// let container = document.getElementById('mynetwork');
+let startingNode = 8;
+// const startingContainer = document.getElementById('startingPoint');
+let destinationNode = 3;
+// const destinationContainer = document.getElementById('destinationPoint');
 let network = null
 let nodes = null;
 let edges = null;
@@ -80,7 +51,7 @@ edgeData.map(value => {
         weight: value.value,
     });
 });
-console.log(graph);
+
 
 console.log("graph: ", graph);
 
@@ -113,7 +84,7 @@ class PriorityQueue
 
     updatePriority(vertex, priority, prevNode)
     {
-
+        let i = 0;
         let temp = this.queue.map(value => {
             if(value) return value.vertex
         }).indexOf(vertex);
@@ -125,7 +96,7 @@ class PriorityQueue
             this.swim(this.n);
         }
 
-
+        console.log("Priority queue", this.queue);
     }
 
     swim(i)
@@ -151,7 +122,7 @@ class PriorityQueue
 
     exchange(i, j)
     {
-        console.log("i and j", i,j," -- queue", this.queue);
+        // console.log("i and j", i,j," -- queue", this.queue);
         const temp = this.queue[i];
         this.queue[i] = this.queue[j];
         this.queue[j] = temp;
@@ -170,7 +141,7 @@ class PriorityQueue
     }
 }
 
-renderMap();
+// renderMap();
 
 
 function compute()
@@ -188,15 +159,19 @@ function compute()
             pq.insert(value.id, Infinity, startingNode);
     });
 
+    console.log("Priority queue", pq);
+
 
 
     while (!pq.isEmpty())
     {
-        console.log("popped")
         const smallNode = pq.delMin();
 
+        console.log("Popped vertex ", smallNode.vertex);
+        console.log("Attached vertices ", graph[smallNode.vertex-1]);
+
         graph[smallNode.vertex-1].forEach(value => {
-            console.log("adjusting", value.vertices)
+            console.log("adjusting ", value.vertices, " for ", smallNode.vertex);
             if(!X.includes(value.vertices))
                 pq.updatePriority(value.vertices, value.weight+smallNode.priority, smallNode.vertex);
         });
@@ -214,9 +189,11 @@ function compute()
     console.log("shortest distance to each node:", A);
     console.log("path followed: ", path);
 
-    highlightPath(path[destinationNode-1]);
+    // highlightPath(path[destinationNode-1]);
 
 }
+
+compute()
 
 function highlightPath(path)
 {
